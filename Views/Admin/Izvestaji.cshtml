@@ -1,0 +1,81 @@
+@model IzvestajViewModel
+@{
+    ViewData["Title"] = "Izveštaji o licitacijama";
+}
+
+<h1 class="mb-4">Izveštaji o licitacijama</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>@Model.UkupnoAutomobila</h3>
+                <p class="text-muted mb-0">Ukupno automobila</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>@Model.UkupnoAktivnihLicitacija</h3>
+                <p class="text-muted mb-0">Aktivne licitacije</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>@Model.UkupnoZavrsenihLicitacija</h3>
+                <p class="text-muted mb-0">Završene licitacije</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>@Model.UkupnoPonuda</h3>
+                <p class="text-muted mb-0">Ukupno ponuda</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p class="fs-5">Ukupna vrednost prodatih automobila (završene licitacije sa bar jednom ponudom):
+    <strong>@Model.UkupnaVrednostProdatihAutomobila.ToString("N0") RSD</strong>
+</p>
+
+<h3 class="mt-4">Pregled završenih licitacija</h3>
+@if (!Model.ZavrseneLicitacije.Any())
+{
+    <p class="text-muted">Još uvek nema završenih licitacija.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Automobil</th>
+                <th>Prodavac</th>
+                <th>Početna cena</th>
+                <th>Konačna (najviša) cena</th>
+                <th>Broj ponuda</th>
+                <th>Pobednik</th>
+                <th>Datum završetka</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model.ZavrseneLicitacije)
+            {
+                <tr>
+                    <td><a asp-controller="Automobili" asp-action="Details" asp-route-id="@a.Id">@a.Naslov</a></td>
+                    <td>@a.ProdavacIme</td>
+                    <td>@a.PocetnaCena.ToString("N0") RSD</td>
+                    <td>@a.TrenutnaCena.ToString("N0") RSD</td>
+                    <td>@a.BrojPonuda</td>
+                    <td>@(a.NajviciPonudjacIme ?? "-")</td>
+                    <td>@a.DatumZavrsetka.ToString("dd.MM.yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

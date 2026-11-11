@@ -1,0 +1,61 @@
+@model IEnumerable<AutomobilBO>
+@{
+    ViewData["Title"] = "Automobili na licitaciji";
+    var kategorije = ViewBag.Kategorije as IEnumerable<KategorijaBO>;
+}
+
+<h1 class="mb-4">Automobili na licitaciji</h1>
+
+<form method="get" asp-controller="Automobili" asp-action="Index" class="row g-2 mb-4 align-items-end">
+    <div class="col-md-3">
+        <label class="form-label">Marka / model</label>
+        <input type="text" name="marka" value="@ViewBag.Marka" class="form-control" placeholder="npr. Golf" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Kategorija</label>
+        <select name="kategorijaId" class="form-select">
+            <option value="">Sve</option>
+            @if (kategorije != null)
+            {
+                foreach (var k in kategorije)
+                {
+                    <option value="@k.Id" selected="@(ViewBag.KategorijaId == k.Id)">@k.Naziv</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Cena od</label>
+        <input type="number" name="cenaOd" value="@ViewBag.CenaOd" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Cena do</label>
+        <input type="number" name="cenaDo" value="@ViewBag.CenaDo" class="form-control" />
+    </div>
+    <div class="col-md-1">
+        <label class="form-label">Godina od</label>
+        <input type="number" name="godinaOd" value="@ViewBag.GodinaOd" class="form-control" />
+    </div>
+    <div class="col-md-2 form-check mt-4">
+        <input type="checkbox" class="form-check-input" name="prikaziZavrsene" value="true" @(((bool)ViewBag.PrikaziZavrsene) ? "checked" : "") />
+        <label class="form-check-label">Prikaži i završene</label>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Pretraži</button>
+        <a asp-controller="Automobili" asp-action="Index" class="btn btn-outline-secondary">Poništi filtere</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Nema automobila koji odgovaraju zadatim kriterijumima.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var automobil in Model)
+        {
+            @await Html.PartialAsync("_AutomobilKartica", automobil)
+        }
+    </div>
+}

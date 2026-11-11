@@ -1,0 +1,145 @@
+@using Microsoft.AspNetCore.Identity
+@using LicitacijaAutomobila.Models.Entities
+@using LicitacijaAutomobila.Repositories.Interfaces
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject INotifikacijaRepository NotifikacijaRepository
+@{
+    int neprocitanihObavestenja = 0;
+    if (SignInManager.IsSignedIn(User))
+    {
+        var trenutniId = UserManager.GetUserId(User);
+        if (!string.IsNullOrEmpty(trenutniId))
+        {
+            neprocitanihObavestenja = NotifikacijaRepository.BrojNeprocitanih(trenutniId);
+        }
+    }
+}
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Licitacija automobila</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">🚗 Licitacija automobila</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Automobili" asp-action="Index">Automobili na licitaciji</a>
+                        </li>
+                        @if (User.IsInRole(Roles.Prodavac))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Automobili" asp-action="MojiAutomobili">Moji oglasi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Automobili" asp-action="Create">Dodaj automobil</a>
+                            </li>
+                        }
+                        @if (User.IsInRole(Roles.Kupac))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Ponude" asp-action="MojePonude">Moje ponude</a>
+                            </li>
+                        }
+                        @if (User.IsInRole(Roles.Administrator))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Administracija</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Korisnici">Korisnici</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Kategorije">Kategorije</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Izvestaji">Izveštaji</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link position-relative" asp-controller="Obavestenja" asp-action="Index">
+                                    Obaveštenja
+                                    @if (neprocitanihObavestenja > 0)
+                                    {
+                                        <span class="badge rounded-pill bg-danger">@neprocitanihObavestenja</span>
+                                    }
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    @User.Identity!.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" asp-controller="Profil" asp-action="Edit">Moj profil</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">Odjavi se</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Prijava</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">Registracija</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        @if (TempData["Poruka"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Poruka"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Greska"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Greska"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-5">
+        <div class="container py-3">
+            &copy; 2026 - Licitacija automobila - Projekat iz Praktikuma primenjenog programiranja
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,42 @@
+@model IEnumerable<KategorijaBO>
+@{
+    ViewData["Title"] = "Kategorije";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Kategorije automobila</h1>
+    <a asp-controller="Admin" asp-action="KreirajKategoriju" class="btn btn-primary">+ Nova kategorija</a>
+</div>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Nema definisanih kategorija.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Naziv</th>
+                <th>Broj automobila</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var k in Model)
+            {
+                <tr>
+                    <td>@k.Naziv</td>
+                    <td>@k.BrojAutomobila</td>
+                    <td>
+                        <a asp-controller="Admin" asp-action="IzmeniKategoriju" asp-route-id="@k.Id" class="btn btn-sm btn-outline-secondary">Izmeni</a>
+                        <form asp-controller="Admin" asp-action="ObrisiKategoriju" asp-route-id="@k.Id" method="post" class="d-inline"
+                              onsubmit="return confirm('Da li ste sigurni da želite da obrišete ovu kategoriju?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" @(k.BrojAutomobila > 0 ? "disabled" : "")>Obriši</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,59 @@
+@model IEnumerable<KorisnikBO>
+@{
+    ViewData["Title"] = "Korisnici";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Korisnici (prodavci i kupci)</h1>
+    <a asp-controller="Admin" asp-action="KreirajKorisnika" class="btn btn-primary">+ Novi korisnik</a>
+</div>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Nema registrovanih korisnika.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Ime i prezime</th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Uloga</th>
+                <th>Status</th>
+                <th>Registrovan</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var k in Model)
+            {
+                <tr>
+                    <td>@k.PunoIme</td>
+                    <td>@k.Email</td>
+                    <td>@k.Telefon</td>
+                    <td><span class="badge bg-info text-dark">@k.Rola</span></td>
+                    <td>
+                        @if (k.Aktivan)
+                        {
+                            <span class="badge bg-success">Aktivan</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Deaktiviran</span>
+                        }
+                    </td>
+                    <td>@k.DatumRegistracije.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        <a asp-controller="Admin" asp-action="IzmeniKorisnika" asp-route-id="@k.Id" class="btn btn-sm btn-outline-secondary">Izmeni</a>
+                        <form asp-controller="Admin" asp-action="ObrisiKorisnika" asp-route-id="@k.Id" method="post" class="d-inline"
+                              onsubmit="return confirm('Da li ste sigurni da želite da obrišete ovog korisnika?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Obriši</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

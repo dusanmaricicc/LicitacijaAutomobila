@@ -1,0 +1,73 @@
+@model AutomobilFormViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Dodaj automobil";
+}
+
+<h1 class="mb-4">Dodaj automobil na licitaciju</h1>
+
+<form asp-controller="Automobili" asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Marka" class="form-label"></label>
+            <input asp-for="Marka" class="form-control" />
+            <span asp-validation-for="Marka" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Model" class="form-label"></label>
+            <input asp-for="Model" class="form-control" />
+            <span asp-validation-for="Model" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="Godina" class="form-label"></label>
+            <input asp-for="Godina" class="form-control" />
+            <span asp-validation-for="Godina" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="PocetnaCena" class="form-label"></label>
+            <input asp-for="PocetnaCena" class="form-control" />
+            <span asp-validation-for="PocetnaCena" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="KategorijaId" class="form-label"></label>
+            <select asp-for="KategorijaId" class="form-select" asp-items="@(new SelectList(Model.DostupneKategorije, "Id", "Naziv"))">
+                <option value="">-- izaberite kategoriju --</option>
+            </select>
+            <span asp-validation-for="KategorijaId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Opis" class="form-label"></label>
+        <textarea asp-for="Opis" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Opis" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="DatumPocetka" class="form-label"></label>
+            <input asp-for="DatumPocetka" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+            <span asp-validation-for="DatumPocetka" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="TrajanjeSati" class="form-label"></label>
+            <input asp-for="TrajanjeSati" class="form-control" />
+            <div class="form-text">Koliko sati će licitacija trajati od izabranog početka (npr. 24 = jedan dan).</div>
+            <span asp-validation-for="TrajanjeSati" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Slike" class="form-label"></label>
+        <input type="file" name="Slike" class="form-control" multiple accept="image/*" />
+        <div class="form-text">Možete izabrati jednu ili više slika automobila.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Postavi na licitaciju</button>
+    <a asp-controller="Automobili" asp-action="MojiAutomobili" class="btn btn-outline-secondary">Otkaži</a>
+</form>

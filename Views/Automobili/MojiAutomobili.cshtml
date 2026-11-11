@@ -1,0 +1,71 @@
+@model IEnumerable<AutomobilBO>
+@{
+    ViewData["Title"] = "Moji oglasi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Moji oglasi</h1>
+    <a asp-controller="Automobili" asp-action="Create" class="btn btn-primary">+ Dodaj automobil</a>
+</div>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Još uvek niste postavili nijedan automobil na licitaciju.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Automobil</th>
+                <th>Kategorija</th>
+                <th>Početna cena</th>
+                <th>Trenutna cena</th>
+                <th>Broj ponuda</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.Naslov</td>
+                    <td>@a.KategorijaNaziv</td>
+                    <td>@a.PocetnaCena.ToString("N0") RSD</td>
+                    <td>@a.TrenutnaCena.ToString("N0") RSD</td>
+                    <td>@a.BrojPonuda</td>
+                    <td>
+                        @if (a.JosNijePocela)
+                        {
+                            <span class="badge badge-uskoro">Uskoro</span>
+                        }
+                        else if (a.Aktivna)
+                        {
+                            <span class="badge badge-aktivna">Aktivna</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-zavrsena">Završena</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-controller="Automobili" asp-action="Details" asp-route-id="@a.Id" class="btn btn-sm btn-outline-primary">Detalji</a>
+                        @if (a.BrojPonuda == 0)
+                        {
+                            <a asp-controller="Automobili" asp-action="Edit" asp-route-id="@a.Id" class="btn btn-sm btn-outline-secondary">Izmeni</a>
+                            <form asp-controller="Automobili" asp-action="Delete" asp-route-id="@a.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Da li ste sigurni da želite da uklonite ovaj oglas?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Ukloni</button>
+                            </form>
+                        }
+                        @if (a.Zavrsena)
+                        {
+                            <a asp-controller="Automobili" asp-action="Pobednik" asp-route-id="@a.Id" class="btn btn-sm btn-outline-success">Pobednik</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

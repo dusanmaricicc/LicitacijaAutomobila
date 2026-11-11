@@ -1,0 +1,92 @@
+@model AutomobilFormViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Izmeni oglas";
+}
+
+<h1 class="mb-4">Izmeni oglas</h1>
+
+<form asp-controller="Automobili" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Marka" class="form-label"></label>
+            <input asp-for="Marka" class="form-control" />
+            <span asp-validation-for="Marka" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Model" class="form-label"></label>
+            <input asp-for="Model" class="form-control" />
+            <span asp-validation-for="Model" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="Godina" class="form-label"></label>
+            <input asp-for="Godina" class="form-control" />
+            <span asp-validation-for="Godina" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="PocetnaCena" class="form-label"></label>
+            <input asp-for="PocetnaCena" class="form-control" />
+            <span asp-validation-for="PocetnaCena" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="KategorijaId" class="form-label"></label>
+            <select asp-for="KategorijaId" class="form-select" asp-items="@(new SelectList(Model.DostupneKategorije, "Id", "Naziv"))">
+                <option value="">-- izaberite kategoriju --</option>
+            </select>
+            <span asp-validation-for="KategorijaId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Opis" class="form-label"></label>
+        <textarea asp-for="Opis" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Opis" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="DatumPocetka" class="form-label"></label>
+            <input asp-for="DatumPocetka" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+            <span asp-validation-for="DatumPocetka" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="TrajanjeSati" class="form-label"></label>
+            <input asp-for="TrajanjeSati" class="form-control" />
+            <span asp-validation-for="TrajanjeSati" class="text-danger"></span>
+        </div>
+    </div>
+
+    @if (Model.PostojeceSlike.Any())
+    {
+    <div class="mb-3">
+        <label class="form-label">Postojeće slike</label>
+        <div class="d-flex gap-2 flex-wrap">
+            @foreach (var slika in Model.PostojeceSlike)
+            {
+                <div class="position-relative">
+                    <img src="@slika.Putanja" style="height:100px;object-fit:cover;" class="rounded border" />
+                    <button type="submit"
+                            formaction="@Url.Action("ObrisiSliku", "Automobili", new { slikaId = slika.Id, automobilId = Model.Id })"
+                            formmethod="post"
+                            onclick="return confirm('Obrisati ovu sliku?');"
+                            class="btn btn-sm btn-danger py-0 px-1 position-absolute top-0 end-0 m-1">&times;</button>
+                </div>
+            }
+        </div>
+    </div>
+    }
+
+    <div class="mb-3">
+        <label asp-for="Slike" class="form-label">Dodaj nove slike (opciono)</label>
+        <input type="file" name="Slike" class="form-control" multiple accept="image/*" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sačuvaj izmene</button>
+    <a asp-controller="Automobili" asp-action="MojiAutomobili" class="btn btn-outline-secondary">Otkaži</a>
+</form>

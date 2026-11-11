@@ -1,0 +1,35 @@
+html {
+  font-size: 15px;
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 80px;
+}
+
+.car-card img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.badge-aktivna {
+    background-color: #198754;
+}
+
+.badge-zavrsena {
+    background-color: #6c757d;
+}
+
+.badge-uskoro {
+    background-color: #0dcaf0;
+    color: #000;
+}
+
+.hero {
+  background: linear-gradient(135deg, #1f2937, #374151);
+  color: #fff;
+  padding: 3rem 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+}

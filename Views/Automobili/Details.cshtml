@@ -1,0 +1,137 @@
+@model AutomobilBO
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<LicitacijaAutomobila.Models.Entities.ApplicationUser> UserManager
+@{
+    ViewData["Title"] = Model.Naslov;
+    var ponude = ViewBag.Ponude as IEnumerable<PonudaBO> ?? Enumerable.Empty<PonudaBO>();
+    int minimalniKorak = ViewBag.MinimalniKorak;
+    var minimalnaSledecaPonuda = ponude.Any() ? Model.TrenutnaCena + minimalniKorak : Model.PocetnaCena;
+}
+
+<div class="row">
+    <div class="col-md-6">
+        @if (Model.PutanjeSlika.Any())
+        {
+            <div id="carouselSlike" class="carousel slide mb-3" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.PutanjeSlika.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@Model.PutanjeSlika[i]" class="d-block w-100" style="max-height:400px;object-fit:cover;" />
+                        </div>
+                    }
+                </div>
+                @if (Model.PutanjeSlika.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselSlike" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselSlike" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                }
+            </div>
+        }
+        else
+        {
+            <img src="https://placehold.co/600x400?text=Bez+slike" class="img-fluid mb-3" />
+        }
+    </div>
+
+    <div class="col-md-6">
+        <h1>@Model.Naslov</h1>
+        <p class="text-muted">@Model.KategorijaNaziv &middot; Prodavac: @Model.ProdavacIme</p>
+
+        <p>
+            @if (Model.JosNijePocela)
+            {
+                <span class="badge badge-uskoro">Licitacija počinje @Model.DatumPocetka.ToString("dd.MM.yyyy HH:mm")</span>
+            }
+            else if (Model.Aktivna)
+            {
+                <span class="badge badge-aktivna">Aktivna do @Model.DatumZavrsetka.ToString("dd.MM.yyyy HH:mm")</span>
+            }
+            else
+            {
+                <span class="badge badge-zavrsena">Licitacija završena @Model.DatumZavrsetka.ToString("dd.MM.yyyy HH:mm")</span>
+            }
+        </p>
+
+        <table class="table">
+            <tr><th>Početna cena</th><td>@Model.PocetnaCena.ToString("N0") RSD</td></tr>
+            <tr><th>Trenutna (najviša) cena</th><td class="fs-5 fw-bold">@Model.TrenutnaCena.ToString("N0") RSD</td></tr>
+            <tr><th>Broj ponuda</th><td>@Model.BrojPonuda</td></tr>
+            @if (Model.Zavrsena && Model.NajviciPonudjacIme != null)
+            {
+                <tr><th>Pobednik licitacije</th><td>@Model.NajviciPonudjacIme</td></tr>
+            }
+        </table>
+
+        <p>@Model.Opis</p>
+
+        @if (User.IsInRole(Roles.Kupac) && Model.Aktivna)
+        {
+            <form asp-controller="Ponude" asp-action="DodajPonudu" method="post" class="row g-2 align-items-end">
+                <input type="hidden" name="automobilId" value="@Model.Id" />
+                <div class="col-8">
+                    <label class="form-label">Vaša ponuda (min. @minimalnaSledecaPonuda.ToString("N0") RSD)</label>
+                    <input type="number" name="iznos" class="form-control" min="@minimalnaSledecaPonuda" step="1" required />
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-success w-100">Ponudi</button>
+                </div>
+            </form>
+        }
+        else if (!User.Identity!.IsAuthenticated)
+        {
+            <p><a asp-controller="Account" asp-action="Login">Prijavite se</a> kao kupac da biste licitirali.</p>
+        }
+        else if (User.IsInRole(Roles.Prodavac) && Model.ProdavacId == UserManager.GetUserId(User))
+        {
+            @if (Model.Zavrsena)
+            {
+                <a asp-controller="Automobili" asp-action="Pobednik" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                    Prikaži kontakt kupca sa najvišom ponudom
+                </a>
+            }
+            else if (!Model.Zavrsena && Model.BrojPonuda == 0)
+            {
+                <a asp-controller="Automobili" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary me-2">Izmeni oglas</a>
+                <form asp-controller="Automobili" asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline"
+                      onsubmit="return confirm('Da li ste sigurni da želite da uklonite ovaj oglas?');">
+                    <button type="submit" class="btn btn-outline-danger">Ukloni oglas</button>
+                </form>
+            }
+        }
+    </div>
+</div>
+
+<h3 class="mt-4">Istorija ponuda</h3>
+@if (!ponude.Any())
+{
+    <p class="text-muted">Za sada nema ponuda za ovaj automobil.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Kupac</th>
+                <th>Iznos</th>
+                <th>Vreme ponude</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in ponude)
+            {
+                <tr class="@(p.JeNajvisa ? "table-success" : "")">
+                    <td>@p.KupacIme</td>
+                    <td>@p.Iznos.ToString("N0") RSD</td>
+                    <td>@p.VremePonude.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                    <td>@(p.JeNajvisa ? "Najviša ponuda" : "")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,28 @@
+@model LicitacijaAutomobila.Controllers.KupacKontaktBO?
+@{
+    ViewData["Title"] = "Pobednik licitacije";
+    var automobil = ViewBag.Automobil as AutomobilBO;
+}
+
+<h1 class="mb-4">Pobednik licitacije – @automobil?.Naslov</h1>
+
+@if (Model is null)
+{
+    <div class="alert alert-warning">@ViewBag.Poruka</div>
+}
+else
+{
+    <div class="card" style="max-width: 500px;">
+        <div class="card-body">
+            <h5 class="card-title">Kontakt podaci kupca sa najvišom ponudom</h5>
+            <table class="table">
+                <tr><th>Ime i prezime</th><td>@Model.ImePrezime</td></tr>
+                <tr><th>Email</th><td>@Model.Email</td></tr>
+                <tr><th>Telefon</th><td>@Model.Telefon</td></tr>
+                <tr><th>Iznos pobedničke ponude</th><td class="fw-bold">@Model.IznosPonude.ToString("N0") RSD</td></tr>
+            </table>
+        </div>
+    </div>
+}
+
+<a asp-controller="Automobili" asp-action="MojiAutomobili" class="btn btn-outline-secondary mt-3">Nazad na moje oglase</a>

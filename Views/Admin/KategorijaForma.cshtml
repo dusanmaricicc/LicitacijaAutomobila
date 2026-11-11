@@ -1,0 +1,21 @@
+@model KategorijaFormViewModel
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Nova kategorija" : "Izmeni kategoriju";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<form asp-controller="Admin" asp-action="@(Model.Id == 0 ? "KreirajKategoriju" : "IzmeniKategoriju")"
+      asp-route-id="@Model.Id" method="post" style="max-width:500px;">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Naziv" class="form-label"></label>
+        <input asp-for="Naziv" class="form-control" />
+        <span asp-validation-for="Naziv" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sačuvaj</button>
+    <a asp-controller="Admin" asp-action="Kategorije" class="btn btn-outline-secondary">Otkaži</a>
+</form>

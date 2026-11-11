@@ -1,0 +1,63 @@
+@model IEnumerable<PonudaBO>
+@{
+    ViewData["Title"] = "Moje ponude";
+}
+
+<h1 class="mb-4">Moje ponude</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Još uvek niste dali nijednu ponudu.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Automobil</th>
+                <th>Moja ponuda</th>
+                <th>Vreme ponude</th>
+                <th>Status licitacije</th>
+                <th>Status moje ponude</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.AutomobilNaslov</td>
+                    <td>@p.Iznos.ToString("N0") RSD</td>
+                    <td>@p.VremePonude.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        @if (p.AutomobilZavrsena)
+                        {
+                            <span class="badge badge-zavrsena">Završena</span>
+                        }
+                        else if (p.AutomobilAktivna)
+                        {
+                            <span class="badge badge-aktivna">Aktivna</span>
+                        }
+                    </td>
+                    <td>
+                        @if (p.JeNajvisa && p.AutomobilZavrsena)
+                        {
+                            <span class="badge bg-success">Pobedili ste!</span>
+                        }
+                        else if (p.JeNajvisa)
+                        {
+                            <span class="badge bg-success">Trenutno najviša ponuda</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Nadmašena</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-controller="Automobili" asp-action="Details" asp-route-id="@p.AutomobilId" class="btn btn-sm btn-outline-primary">Detalji</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

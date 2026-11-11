@@ -1,0 +1,29 @@
+@model IEnumerable<NotifikacijaBO>
+@{
+    ViewData["Title"] = "Obaveštenja";
+}
+
+<h1 class="mb-4">Obaveštenja</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Nemate obaveštenja.</p>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var n in Model)
+        {
+            <div class="list-group-item @(n.Procitano ? "" : "list-group-item-warning")">
+                <div class="d-flex justify-content-between">
+                    <span>@n.Poruka</span>
+                    <small class="text-muted">@n.Datum.ToString("dd.MM.yyyy HH:mm")</small>
+                </div>
+                @if (n.AutomobilId.HasValue)
+                {
+                    <a asp-controller="Automobili" asp-action="Details" asp-route-id="@n.AutomobilId" class="small">Pogledaj automobil</a>
+                }
+            </div>
+        }
+    </div>
+}

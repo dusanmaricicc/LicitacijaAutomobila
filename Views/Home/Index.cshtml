@@ -1,0 +1,26 @@
+@model IEnumerable<AutomobilBO>
+@{
+    ViewData["Title"] = "Početna";
+}
+
+<div class="hero">
+    <h1 class="display-6 fw-bold">Licitacija automobila</h1>
+    <p class="lead mb-0">Pronađite svoj sledeći automobil ili prodajte svoj po najboljoj ceni – putem transparentne online licitacije.</p>
+    <a class="btn btn-light mt-3" asp-controller="Automobili" asp-action="Index">Pogledaj sve aktivne licitacije</a>
+</div>
+
+<h2 class="mb-3">Trenutno aktivne licitacije</h2>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Trenutno nema aktivnih licitacija.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var automobil in Model)
+        {
+            @await Html.PartialAsync("~/Views/Automobili/_AutomobilKartica.cshtml", automobil)
+        }
+    </div>
+}

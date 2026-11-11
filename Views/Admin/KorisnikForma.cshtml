@@ -1,0 +1,76 @@
+@model KorisnikFormViewModel
+@{
+    ViewData["Title"] = Model.JeIzmena ? "Izmeni korisnika" : "Novi korisnik";
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<form asp-controller="Admin" asp-action="@(Model.JeIzmena ? "IzmeniKorisnika" : "KreirajKorisnika")"
+      asp-route-id="@Model.Id" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    @if (ViewBag.PostojeciKorisnikId != null)
+    {
+        <div class="alert alert-warning">
+            Korisnik sa ovim podacima već postoji.
+            <a asp-controller="Admin" asp-action="IzmeniKorisnika" asp-route-id="@ViewBag.PostojeciKorisnikId">Kliknite ovde da ga izmenite</a>.
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Ime" class="form-label"></label>
+            <input asp-for="Ime" class="form-control" />
+            <span asp-validation-for="Ime" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Prezime" class="form-label"></label>
+            <input asp-for="Prezime" class="form-control" />
+            <span asp-validation-for="Prezime" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Telefon" class="form-label"></label>
+            <input asp-for="Telefon" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Adresa" class="form-label"></label>
+            <input asp-for="Adresa" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Rola" class="form-label"></label>
+            <select asp-for="Rola" class="form-select">
+                <option value="@Roles.Kupac">Kupac</option>
+                <option value="@Roles.Prodavac">Prodavac</option>
+            </select>
+            <span asp-validation-for="Rola" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3 form-check mt-4">
+            <input asp-for="Aktivan" class="form-check-input" />
+            <label asp-for="Aktivan" class="form-check-label"></label>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label">
+            @(Model.JeIzmena ? "Nova lozinka (ostavite prazno ako ne menjate)" : "Lozinka")
+        </label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sačuvaj</button>
+    <a asp-controller="Admin" asp-action="Korisnici" class="btn btn-outline-secondary">Otkaži</a>
+</form>
