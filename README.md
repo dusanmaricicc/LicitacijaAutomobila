@@ -75,15 +75,13 @@ Novi nalozi prodavaca i kupaca mogu se i samostalno registrovati preko `/Account
 - Kupac koji izgubi status najviše ponude dobija obaveštenje (vidljivo u meniju „Obaveštenja“, sa brojačem nepročitanih – osvežava se nakon učitavanja stranice).
 - Prilikom kreiranja korisničkog naloga (i od strane administratora i samoregistracijom), sistem proverava da li već postoji nalog sa istim emailom i o tome obaveštava korisnika.
 
-## Napomene / pretpostavke (za seminarski rad)
+## Projektne odluke
 
-Kako konkretni brojevi nisu bili propisani zadatkom, usvojene su sledeće razumne pretpostavke, koje treba pomenuti u seminarskom radu:
+Pojedini detalji nisu bili unapred definisani, pa su usvojena sledeća rešenja:
 
-- Minimalni korak ponude: **1.000 RSD** (eksplicitno traženo zadatkom).
-- Trajanje licitacije: određuje ga prodavac po oglasu (broj sati, podrazumevano 24h) – zadatak eksplicitno ostavlja ovo na izbor studenta.
-- Slike automobila: podržano više slika po oglasu (galerija), čuvaju se u `wwwroot/images/automobili`.
-- Administratorski nalozi se ne kreiraju kroz javnu registraciju, već isključivo kroz administratorski panel (ili seed) – ovo je uobičajena i bezbednosno opravdana praksa.
+- **Minimalni korak ponude:** 1.000 RSD. Vrednost je podesiva u `appsettings.json`.
+- **Trajanje licitacije:** određuje ga prodavac pri objavi oglasa (broj sati, podrazumevano 24h).
+- **Slike automobila:** podržano je više slika po oglasu (galerija), a čuvaju se u `wwwroot/images/automobili`.
+- **Administratorski nalozi:** ne mogu se kreirati javnom registracijom, već isključivo kroz administratorski panel ili početne (seed) podatke, što je bezbednosno opravdano.
 
-## Sledeći korak – seminarski rad
 
-Aplikacija je prva faza projekta. Seminarski rad (Larmanova metoda: verbalni opis sistema, specifikacija zahteva, use-case model, dijagrami sekvenci, ugovori o sistemskim operacijama, konceptualni/relacioni model baze, kolaboracioni dijagrami, opis implementacije) radiće se u sledećoj fazi, nakon što aplikacija bude finalizovana i eventualno testirana.
