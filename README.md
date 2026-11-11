@@ -1,6 +1,6 @@
 # Licitacija automobila – veb aplikacija (ASP.NET Core MVC .NET 8 + EF Core 9 + MS SQL)
 
-Projekat iz Praktikuma primenjenog programiranja – Veb aplikacija za licitaciju automobila.
+Veb aplikacija za licitaciju automobila.
 
 ## Tehnologije
 
@@ -52,11 +52,11 @@ Update-Database
 
 nakon čega u `Program.cs` zamenite `context.Database.EnsureCreated()` (u `DbInitializer.cs`) sa `context.Database.Migrate()`.
 
-### Obavezna SQL skripta
+### SQL skripta
 
-Fajl `Database/CreateDatabase.sql` sadrži skriptu (ne backup) za kreiranje baze, svih tabela (Identity + domenske) i seed podataka (uloge, kategorije). Korisnički nalozi (admin/demo) se, iz tehničkih razloga (Identity heš lozinki), kreiraju kroz kod pri prvom pokretanju aplikacije – detaljno objašnjenje se nalazi u komentaru na vrhu skripte, zajedno sa uputstvom kako u SSMS-u eksportovati i podatke (Tasks → Generate Scripts → Schema and Data) ukoliko je za predaju potrebna potpuno popunjena skripta.
+Fajl `Database/CreateDatabase.sql` sadrži skriptu (ne backup) za kreiranje baze, svih tabela (Identity + domenske) i seed podataka (uloge, kategorije). Korisnički nalozi (admin/demo) se, iz tehničkih razloga (Identity heš lozinki), kreiraju kroz kod pri prvom pokretanju aplikacije – detaljno objašnjenje se nalazi u komentaru na vrhu skripte, zajedno sa uputstvom kako u SSMS-u eksportovati i podatke (Tasks → Generate Scripts → Schema and Data).
 
-## Pristupni parametri (obavezno po uputstvu projekta)
+## Demo nalozi
 
 | Uloga      | Email                     | Lozinka         |
 |------------|---------------------------|-----------------|
